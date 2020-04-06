@@ -16,7 +16,7 @@ async def on_message(message):
     if message.content.startswith('%beep'):
         await message.channel.send('Boop!')
         
-    if message.content.startswith('$hi'):
+    if message.content.startswith('$s'):
         await message.channel.send('I predict a shiny in ' + str(random.randint(1, 1000000)) + ' frames')
 '''
     if message.content.startswith('%hi'):
