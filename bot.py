@@ -1,7 +1,7 @@
 import discord
 import os
 import random
-
+import csv
 
 client = discord.Client()
 
@@ -18,15 +18,18 @@ async def on_message(message):
         
     if message.content.startswith('$s'):
         await message.channel.send('I predict a shiny in ' + str(random.randint(1, 10000)) + ' frames')
+
+    if (message.channel = client.get_channel(696864617653076078)):
+        if message.content.startswith('%g start'):
+            await message.channel.send('Creating giveaway')
+    
 '''
     if message.content.startswith('%hi'):
         await message.channel.send('Hello!')
-
     if message.content.startswith('%test'):
         await message.channel.send(message.channel.name)
-
     if message.content.startswith('%giveaway') and message.channel.name == 'giveaway-announcements':
         await client.get_channel(694645573625708565).send('msg: ' + message.content)
-'''
+'''a
 
 client.run(os.environ['TOKEN'])
