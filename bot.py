@@ -30,6 +30,6 @@ async def on_message(message):
         await message.channel.send(message.channel.name)
     if message.content.startswith('%giveaway') and message.channel.name == 'giveaway-announcements':
         await client.get_channel(694645573625708565).send('msg: ' + message.content)
-'''a
+'''
 
 client.run(os.environ['TOKEN'])
