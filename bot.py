@@ -5,6 +5,7 @@ import psycopg2
 
 
 DATABASE_URL = os.environ['DATABASE_URL']
+
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 client = discord.Client()
 cursor = conn.cursor()
@@ -34,14 +35,16 @@ async def on_message(message):
             await message.channel.send('Creating giveaway')
 
     if (message.content.startswith('$hi')):
-        hiCount = 1 + int(cursor.execute("select hi_count from users where user_id = " + str(message.author.id)) or 0)
+        cursor.execute("select hi_count from users where user_id = " + str(message.author.id))
+        hiCount = 1 + cursor.fetchone()[0]
+
         if (hiCount == 1):
-            cursor.execute("insert into users(user_id, hi_count) values ("+str(message.author.id)+", 1)")
+            cursor.execute('insert into users(user_id, hi_count) values ('+str(message.author.id)+', 1)')
             conn.commit()
 
         await message.channel.send("You've said hi to MuMu " + str(hiCount) + " times since I started counting" )
 
-        cursor.execute('update users set hi_count = ' + str(hiCount) + "where user_id = " + str(message.author.id))
+        cursor.execute('update users set hi_count = ' + str(hiCount) + 'where user_id = ' + str(message.author.id))
         conn.commit()
 
 '''
