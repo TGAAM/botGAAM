@@ -18,7 +18,7 @@ async def on_ready():
     #cursor.execute("drop table users")
     #conn.commit()
     
-    sqlTable = "create table if not exists users(user_id bigint not null, hi_count int, check_count int, primary key(user_id));"
+    sqlTable = "create table if not exists users(user_id bigint not null, hi_count int default 0, check_count int default 0, primary key(user_id));"
     cursor.execute(sqlTable)
     conn.commit()
 
