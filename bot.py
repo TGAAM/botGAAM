@@ -47,6 +47,9 @@ async def on_message(message):
         cursor.execute('update users set hi_count = ' + str(hiCount) + 'where user_id = ' + str(message.author.id))
         conn.commit()
 
+    if (message.content.startswith('$dynamax')):
+            await message.channel.send("🙀 🙀 Are you really <:gmax_gengar:696490246057099304> Dynamaxing <:gmax_gengar:696490246057099304>?!?!?! 🤔 🤔 B-But have u checked the 📌 📌 pins?!!❗ I'm not 🙅 🙅‍♀️ allowing it!!! 🙏 🙏 Please, don't Dynamax ⛔ ⛔")
+
 '''
     if message.content.startswith('%hi'):
         await message.channel.send('Hello!')
