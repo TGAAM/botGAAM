@@ -41,7 +41,7 @@ async def on_ready():
     conn.commit()
 
     # adding a table for giveaway testing
-    sqlTable = "create table if not exists giveaways(giveaway_id serial primary key, creator_id bigint not null, title varchar not null, duration varchar, description varchar, post_id bigint)"
+    sqlTable = "create table if not exists giveaways(giveaway_id serial primary key, creator_id bigint not null, title varchar not null, duration varchar, description varchar, post_id bigint, status int default 0)"
     cursor.execute(sqlTable)
     conn.commit()
 
@@ -215,6 +215,7 @@ async def on_message(message):
         # add the message ID to the table for future reference
         sqlQuery = "update giveaways set post_id = %s where giveaway_id = %s"
         cursor.execute(sqlQuery, (msgPosted.id, giveawayID))
+        conn.commit()
 
         # add a react to the message
         await msgPosted.add_reaction('🎉')
@@ -236,7 +237,7 @@ async def on_message(message):
             await message.channel.send('Too many input parameters')
             return
 
-        # check if the user is in the table
+        # check if the giveaway is in the table
         sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
         cursor.execute(sqlQuery, (str(inputStr[1]),))
         giveawayExists = cursor.fetchone()[0]
@@ -256,19 +257,99 @@ async def on_message(message):
         # get a list of reacts on the post
         giveawayPost = await message.channel.fetch_message(str(queryResults[5]))
         reactsList = giveawayPost.reactions
+        for react in reactsList:
+            if (str(react) == '🎉'):
+                users = await react.users().flatten()
 
         # post the results
         # would be better to do as one post with formatting
         await message.channel.send(msgResults)
-        await message.channel.send(str(reactsList))
+        await message.channel.send(str(users))
 
         return
 
+    # pull a giveaway winner
+    # full version would be limited to author or mods
+    if (message.content.startswith('!gwinner')):
+        # split the input into parameters on spaces
+        inputStr = message.content.split(' ')
+
+        # error message example
+        # check if the input is too long
+        if (len(inputStr) > 2):
+            await message.channel.send('Too many input parameters')
+            return
+
+        # check if the giveaway is in the table
+        sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
+        cursor.execute(sqlQuery, (str(inputStr[1]),))
+        giveawayExists = cursor.fetchone()[0]
+
+        if (giveawayExists == 0):
+            await message.channel.send('Giveaway ID not found')
+            return
+
+        # select * returns all the values for the row
+        sqlQuery = "select * from giveaways where giveaway_id = %s"
+        cursor.execute(sqlQuery, (str(inputStr[1]),))
+        queryResults = cursor.fetchone()
+
+        usersList = {}
+        giveawayAuthor = client.get_user(queryResults[1])
+
+        # get a list of reacts on the post
+        giveawayPost = await message.channel.fetch_message(str(queryResults[5]))
+        reactsList = giveawayPost.reactions
+        for react in reactsList:
+            # only looking at the party popper react
+            if (str(react) == '🎉'):
+                # get the users with that react
+                usersList = await react.users().flatten()
+
+                # remove the bot user from the list
+                usersList.remove(client.get_user(694559997295722627))
+
+                # remove the author if they reacted
+                try:
+                    usersList.remove(giveawayAuthor)
+                except:
+                    pass
+
+        giveawayWinner = random.choice(usersList) 
+
+
+        # post the results
+        # could do pings as well later
+        await message.channel.send("The winner of giveaway %s by %s (ID: %s) is %s (ID: %s)" % (queryResults[0], giveawayAuthor.name, giveawayAuthor.id, giveawayWinner.name, giveawayWinner.id))
+        
+        return
+
+
     # end a giveaway
-    # I'll start by only allowing the author to end it
-    # Full version would be author or mod
+    # Full version would be author or mod only
     if (message.content.startswith('!gend')):
-        await message.channel.send('not programmed yet')
+        # split the input into parameters on spaces
+        inputStr = message.content.split(' ')
+
+        # error message example
+        # check if the input is too long
+        if (len(inputStr) > 2):
+            await message.channel.send('Too many input parameters')
+            return
+
+        # check if the giveaway is in the table
+        sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
+        cursor.execute(sqlQuery, (str(inputStr[1]),))
+        giveawayExists = cursor.fetchone()[0]
+
+        if (giveawayExists == 0):
+            await message.channel.send('Giveaway ID not found')
+            return
+
+        sqlQuery = "delete from giveaways where giveaway_id = %s"
+        cursor.execute(sqlQuery, (str(inputStr[1]),))
+
+        await message.channel.send('Giveaway removed')
 
         return
 
