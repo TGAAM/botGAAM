@@ -237,10 +237,17 @@ async def on_message(message):
             await message.channel.send('Too many input parameters')
             return
 
-        # check if the giveaway is in the table
-        sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
-        cursor.execute(sqlQuery, (str(inputStr[1]),))
-        giveawayExists = cursor.fetchone()[0]
+        # check if the giveaway is in the table 
+        # add error handling in case of bad formatting (type mismatch etc)
+        try:
+            sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
+            cursor.execute(sqlQuery, (str(inputStr[1]),))
+            giveawayExists = cursor.fetchone()[0]
+        except:
+            await message.channel.send('Problem executing command, possible input type mismatch')
+            conn.rollback()
+            return
+
 
         if (giveawayExists == 0):
             await message.channel.send('Giveaway ID not found')
@@ -281,9 +288,15 @@ async def on_message(message):
             return
 
         # check if the giveaway is in the table
-        sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
-        cursor.execute(sqlQuery, (str(inputStr[1]),))
-        giveawayExists = cursor.fetchone()[0]
+        # add error handling in case of bad formatting (type mismatch etc)
+        try:
+            sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
+            cursor.execute(sqlQuery, (str(inputStr[1]),))
+            giveawayExists = cursor.fetchone()[0]
+        except:
+            await message.channel.send('Problem executing command, possible input type mismatch')
+            conn.rollback()
+            return
 
         if (giveawayExists == 0):
             await message.channel.send('Giveaway ID not found')
@@ -315,6 +328,13 @@ async def on_message(message):
                 except:
                     pass
 
+        
+        # check for an empty list, only reacts were the bot and user
+        if (len(usersList) == 0):
+            await message.channel.send('No entrants found')
+            return
+
+        # pull a winner
         giveawayWinner = random.choice(usersList) 
 
 
@@ -338,9 +358,15 @@ async def on_message(message):
             return
 
         # check if the giveaway is in the table
-        sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
-        cursor.execute(sqlQuery, (str(inputStr[1]),))
-        giveawayExists = cursor.fetchone()[0]
+        # add error handling in case of bad formatting (type mismatch etc)
+        try:
+            sqlQuery = "select count(*) from giveaways where giveaway_id = %s"
+            cursor.execute(sqlQuery, (str(inputStr[1]),))
+            giveawayExists = cursor.fetchone()[0]
+        except:
+            await message.channel.send('Problem executing command, possible input type mismatch')
+            conn.rollback()
+            return
 
         if (giveawayExists == 0):
             await message.channel.send('Giveaway ID not found')
@@ -349,9 +375,24 @@ async def on_message(message):
         sqlQuery = "delete from giveaways where giveaway_id = %s"
         cursor.execute(sqlQuery, (str(inputStr[1]),))
 
-        await message.channel.send('Giveaway removed')
+        await message.channel.send('Giveaway removed/ended')
 
         return
+
+
+    # remove the channel pins
+    if (message.content.startswith('!removepins')):
+
+        # grab the pinned messages
+        pinList = await message.channel.pins()
+
+        # loop through the list and clear the pinned status
+        for msg in pinList:
+            await msg.unpin()
+
+
+        # for testing purposes write a response
+        await message.channel.send('Pins removed')
 
 
 
