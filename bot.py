@@ -8,6 +8,8 @@ psycopg2==2.8.5
 import discord
 import os
 import random
+import asyncio
+import traceback
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from discord.ext.commands import CheckFailure
@@ -47,6 +49,14 @@ async def is_dev(ctx):
 # initial setup 
 @bot.event
 async def on_ready():
+    cogs = ['cogs.mumu_plus']
+    for cog in cogs:
+        try:
+            bot.load_extension(cog)
+        except Exception as e:
+            print("Problem with loading: " + str(cog))
+            traceback.print_exc()
+
     # notify the log that it's ready
     print('We have logged in as {0.user}'.format(bot))
 
