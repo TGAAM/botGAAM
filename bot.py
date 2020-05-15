@@ -24,7 +24,7 @@ devRoles = [689120404664746018, 697890481568481311]
 whitelistChannelsDev = [697060204571000903, 698135978270916678, 698135987225886740]
 
 # setup a discord client
-bot = commands.Bot(command_prefix="!", case_insensitive=True)
+bot = commands.Bot(command_prefix="!", case_insensitive=True, description="Coding testing Bot")
 
 
 # don't work in DMs

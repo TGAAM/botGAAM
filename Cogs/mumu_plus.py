@@ -3,15 +3,15 @@ import random
 from discord.ext import commands
 from discord.utils import get
 
-Class MuMu_Support(commands.cog):
+class MuMu_plus (commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     
-    @bot.event
-    async def on_message(message):
-        if message.author == client.user:
-        return
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author == self.bot.user:
+            return
 
         if message.content.startswith('$s'):
             # send a guess on how far away the shiny is. Playing around with random numbers
@@ -24,6 +24,5 @@ Class MuMu_Support(commands.cog):
             
     
     
-    
-    def setup(bot):
-        bot.add_cog(Pokemon(bot))
+def setup(bot):
+    bot.add_cog(MuMu_plus(bot))
