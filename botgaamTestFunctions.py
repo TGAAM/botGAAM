@@ -48,8 +48,51 @@ async def on_ready():
 
 
 
+@bot.command()
+@commands.check(is_dev_room)
+async def woop(ctx):
+    embed=discord.Embed(title="Woop Woop!", color=0xffc572)
+    embed.set_image(url="https://img.pokemondb.net/artwork/wooper.jpg")
+    await ctx.send(embed=embed)
+    return
 
+@bot.command(aliases = ["appeal", "appealing"])
+@commands.check(is_dev_room)
+async def peel(ctx):
+    await ctx.send("https://www.youtube.com/watch?v=4yHijxLoAPA")
+    return
 
+@bot.command()
+@commands.check(is_dev_room)
+async def uncool(ctx):
+    embed=discord.Embed(color=0xffc572)
+    embed.set_image(url="https://cdn.discordapp.com/attachments/686356524385173553/707577611303256064/7lzcc2z1r2x41.png")
+    await ctx.send(embed=embed)
+    return
+
+@bot.command()
+@commands.check(is_dev_room)
+async def tg(ctx):
+    embed=discord.Embed(title="<:haunter:689169011866730720> Now calling TGAAM <:haunter:689169011866730720>", description="Please hold.", color=0xffc572)
+    embed.add_field(name="...", value="...")
+    embed.set_footer(text="Must be doing something `%important`")
+    await ctx.send(embed=embed)
+    return
+
+@bot.command()
+@commands.check(is_dev_room)
+async def phan(ctx):
+    embed=discord.Embed(description="it me", color=0xffc572)
+    embed.set_thumbnail(url="https://i.imgur.com/yOS4rdj.png")
+    await ctx.send(embed=embed)
+    return
+
+@bot.command()
+@commands.check(is_dev_room)
+async def turnip(ctx):
+    embed=discord.Embed(description="https://discordapp.com/channels/681917060011655179/686356524385173553/709480670237294682", color=0xffc572)
+    await ctx.send(embed=embed)
+    return
 
 
 
