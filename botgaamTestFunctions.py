@@ -22,11 +22,11 @@ whitelistChannelsDev = [697060204571000903, 698135978270916678, 6981359872258867
 
 # active channels dict
 # super-mumu-world: legends, mumu-bros: minions
-activeChannels = {689084632150573118:712967008743850084, 689079607093493780:689533761767079993}
+activeChannels = {689084632150573118:712967008743850084}
 
 
 # setup a discord client
-bot = commands.Bot(command_prefix="!", case_insensitive=True, description="Coding testing Bot")
+bot = commands.Bot(command_prefix="*", case_insensitive=True, description="Coding testing Bot")
 
 
 
@@ -74,7 +74,7 @@ async def goodnight(ctx):
     for channelID in activeChannels:
         channel = ctx.guild.get_channel(channelID)
         role = ctx.guild.get_role(activeChannels[channelID])
-        await channel.set_permissions(role, send_messages=True)
+        await channel.set_permissions(role, send_messages=True, read_messages=True)
 
     notifyRole = ctx.guild.get_role(689120404664746018)
     await ctx.send(notifyRole.mention + " Good night")
@@ -87,7 +87,7 @@ async def goodmorning(ctx):
     for channelID in activeChannels:
         channel = ctx.guild.get_channel(channelID)
         role = ctx.guild.get_role(activeChannels[channelID])
-        await channel.set_permissions(role, send_messages=True)
+        await channel.set_permissions(role, send_messages=True, read_messages=True)
 
     notifyRole = ctx.guild.get_role(689120404664746018)
     await ctx.send(notifyRole.mention + " Good morning")

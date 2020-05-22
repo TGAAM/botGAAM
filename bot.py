@@ -87,7 +87,7 @@ async def goodnight(ctx):
     for channelID in activeChannels:
         channel = ctx.guild.get_channel(channelID)
         role = ctx.guild.get_role(activeChannels[channelID])
-        await channel.set_permissions(role, send_messages=False)
+        await channel.set_permissions(role, send_messages=False, read_messages = True)
 
     notifyRole = ctx.guild.get_role(689120404664746018)
     await ctx.send(notifyRole.mention + " Good night")
@@ -100,7 +100,7 @@ async def goodmorning(ctx):
     for channelID in activeChannels:
         channel = ctx.guild.get_channel(channelID)
         role = ctx.guild.get_role(activeChannels[channelID])
-        await channel.set_permissions(role, send_messages=True)
+        await channel.set_permissions(role, send_messages=True, read_messages = True)
 
     notifyRole = ctx.guild.get_role(689120404664746018)
     await ctx.send(notifyRole.mention + " Good morning")
