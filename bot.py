@@ -81,6 +81,26 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
 
+@bot.listen()
+async def on_message(message):
+        if message.author == bot.user:
+            return
+
+        # condensed logging
+        # mumu-log, mumu-trade
+        logChannels = [689976669930651725, 690534943138512896]
+
+        if (message.channel.id in logChannels):
+            copyTexts = ["is now trading", "Found Trading Partner", "Unexpected behavior", "Resetting bot position"]
+
+            for text in copyTexts:
+                if text in message.content:
+                    # mumu-condensed-log
+                    outputChannel = message.guild.get_channel(714810032142811207) 
+                    await outputChannel.send(message.content)
+                    return
+        return
+
 @bot.command(pass_context=True)
 @commands.check(is_mod)
 async def goodnight(ctx):

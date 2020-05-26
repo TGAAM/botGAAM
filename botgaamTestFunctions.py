@@ -68,31 +68,27 @@ async def on_ready():
 
 
 
-@bot.command(pass_context=True)
-@commands.check(is_mod)
-async def goodnight(ctx):
-    for channelID in activeChannels:
-        channel = ctx.guild.get_channel(channelID)
-        role = ctx.guild.get_role(activeChannels[channelID])
-        await channel.set_permissions(role, send_messages=True, read_messages=True)
+@bot.listen()
+async def on_message(message):
+        if message.author == bot.user:
+            return
 
-    notifyRole = ctx.guild.get_role(689120404664746018)
-    await ctx.send(notifyRole.mention + " Good night")
+        # condensed logging
+        # bot-testing1, bot-testing3
+        logChannels = [697060204571000903, 698135987225886740]
 
-    return
+        if (message.channel.id in logChannels):
+            copyTexts = ["is now trading", "Found Trading Partner", "Unexpected behavior", "Resetting bot position"]
 
-@bot.command(pass_context=True)
-@commands.check(is_mod)
-async def goodmorning(ctx):
-    for channelID in activeChannels:
-        channel = ctx.guild.get_channel(channelID)
-        role = ctx.guild.get_role(activeChannels[channelID])
-        await channel.set_permissions(role, send_messages=True, read_messages=True)
+            for text in copyTexts:
+                if text in message.content:
+                    # bot-testing2
+                    outputChannel = message.guild.get_channel(698135978270916678) 
+                    await outputChannel.send(message.content)
+                    return
 
-    notifyRole = ctx.guild.get_role(689120404664746018)
-    await ctx.send(notifyRole.mention + " Good morning")
 
-    return
+        return
 
 
 
