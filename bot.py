@@ -5,11 +5,14 @@ discord.py==1.3.3
 psycopg2==2.8.5
 '''
 
+from operator import truediv
 import discord
 import os
 import random
 import asyncio
 import traceback
+import emoji
+
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from discord.ext.commands import CheckFailure
@@ -24,8 +27,8 @@ modRoles = [689120404664746018]
 devRoles = [689120404664746018, 697890481568481311]
 
 # dev channel whitelist
-# bot-testing, bot-testing-2, bot-testing-3
-whitelistChannelsDev = [697060204571000903, 698135978270916678, 698135987225886740]
+# bot-testing, bot-testing-2, bot-testing-3, robots
+whitelistChannelsDev = [697060204571000903, 698135978270916678, 698135987225886740, 778751730233770015]
 
 # active channels dict
 # super-mumu-world: legends, mumu-bros: minions
@@ -33,7 +36,11 @@ activeChannels = {689084632150573118:712967008743850084, 689079607093493780:6895
 
 
 # setup a discord client
-bot = commands.Bot(command_prefix="!", case_insensitive=True, description="Coding testing Bot")
+varIntents = discord.Intents.default()
+varIntents.message_content = True
+varIntents.reactions = True
+varIntents.members = True
+bot = commands.Bot(command_prefix="!", case_insensitive=True, description="Coding testing Bot", intents = varIntents)
 
 
 # don't work in DMs
@@ -134,10 +141,32 @@ async def beep(ctx):
     return
 
 @bot.command()
+@commands.check(is_dev_room)
+async def ping(ctx):
+    await ctx.send("Pong!")
+    return
+
+@bot.command()
 async def dynamax(ctx):
     await ctx.send("🙀 🙀 Are you really <:gmax_gengar:696490246057099304> Dynamaxing <:gmax_gengar:696490246057099304>?!?!?! 🤔 🤔 B-But have u checked the 📌 📌 pins?!!❗ I'm not 🙅 🙅‍♀️ allowing it!!! 🙏 🙏 Please, don't Dynamax ⛔ ⛔")
     return
 
+@bot.event
+async def on_raw_reaction_add(reaction):
+    if str(reaction.emoji) == "<:wigglygreen:810539771759689778>":
+        msgGuild = bot.get_guild(reaction.guild_id)
+        msgChannel = msgGuild.get_channel(reaction.channel_id)
+        oldMsg = await msgChannel.fetch_message(reaction.message_id) 
+        newMsg = oldMsg.content
+
+        newMsg = emoji.demojize(newMsg,delimiters=("",""))
+
+        newMsg = newMsg.replace('black_large_square', '<:typeDark:811060133643288636>')
+        newMsg = newMsg.replace('green_square', '<:typeBug:811060133235916802>')
+        newMsg = newMsg.replace('yellow_square', '<:typeElectric:811060168292040764>')
+
+        await oldMsg.channel.send(newMsg)
+    return
 
 # error handling
 @bot.event
